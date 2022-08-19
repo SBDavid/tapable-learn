@@ -34,7 +34,9 @@ class Car {
     this.hooks.brake.call("break");
   }
 
-  setWater
+  setWaterFall(newSpeed) {
+    this.hooks.testSyncWaterfallHook.call(newSpeed);
+  }
 
   routesList = new Array();
 
@@ -64,28 +66,38 @@ const myCar = new Car();
 // });
 // myCar.setSpeed(40);
 
-myCar.hooks.calculateRoutes.tapPromise("GoogleMapsPlugin", (source, target, routesList) => {
-  console.info('myCar.hooks.calculateRoutes.tapPromise')
-  return new Promise((resoleve) => {
-    console.info('myCar.hooks.calculateRoutes.tapPromise Promise', source, target);
-    routesList.push('test');
-    resoleve("tapPromise done")
-  });
-});
-
-myCar.hooks.calculateRoutes.tapPromise("GoogleMapsPlugin", (source, target, routesList) => {
-  console.info('myCar.hooks.calculateRoutes.tapPromise setTimeout')
-  return new Promise((resoleve) => {
-    console.info('myCar.hooks.calculateRoutes.tapPromise setTimeout Promise', source, target, routesList);
+// 测试 tapPromise
+// myCar.hooks.calculateRoutes.tapPromise("GoogleMapsPlugin", (source, target, routesList) => {
+//   console.info('myCar.hooks.calculateRoutes.tapPromise')
+//   return new Promise((resoleve) => {
+//     console.info('myCar.hooks.calculateRoutes.tapPromise Promise', source, target);
+//     routesList.push('test');
+//     resoleve("tapPromise done")
+//   });
+// });
+// myCar.hooks.calculateRoutes.tapPromise("GoogleMapsPlugin", (source, target, routesList) => {
+//   console.info('myCar.hooks.calculateRoutes.tapPromise setTimeout')
+//   return new Promise((resoleve) => {
+//     console.info('myCar.hooks.calculateRoutes.tapPromise setTimeout Promise', source, target, routesList);
     
-    setTimeout(() => {
-      routesList.push('test setTimeout');
-      resoleve("tapPromise done setTimeout")
-    }, 1000);
-  });
+//     setTimeout(() => {
+//       routesList.push('test setTimeout');
+//       resoleve("tapPromise done setTimeout")
+//     }, 1000);
+//   });
+// });
+// myCar.useNavigationSystemPromise("source1", "target1");
+// myCar.useNavigationSystemPromise("source2", "target2");
+
+// 测试water full
+myCar.hooks.testSyncWaterfallHook.tap("newSpeed", (...e) => {
+  console.info('testSyncWaterfallHook', e);
+  return e[0];
 });
 
+myCar.hooks.testSyncWaterfallHook.tap("newSpeed", (...e) => {
+  console.info('testSyncWaterfallHook 2', e);
+  return e[0];
+});
 
-
-myCar.useNavigationSystemPromise("source1", "target1");
-// myCar.useNavigationSystemPromise("source2", "target2");
+myCar.setWaterFall(90);
